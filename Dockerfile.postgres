@@ -1,0 +1,10 @@
+FROM postgres:13
+
+COPY init-db/init-db.sql /tmp/init-db.sql
+
+RUN apt-get update && apt-get install -y dos2unix && \
+    dos2unix /tmp/init-db.sql
+
+ENV POSTGRES_INITDB_ARGS="-c shared_preload_libraries=''"
+
+COPY ./init-db/init-db.sql /docker-entrypoint-initdb.d/init-db.sql
