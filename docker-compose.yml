@@ -50,15 +50,14 @@ services:
       - frontend-network
 
   webapp:
-    build: ./-pwc-Full-Stack-Application-using-React-JS-Nodejs-PostgreSQL/student-web
-    container_name: react-app
+    build:
+      context: ./-pwc-Full-Stack-Application-using-React-JS-Nodejs-PostgreSQL/student-web
+      args:
+        VITE_BACKEND_BASE_URL: ${VITE_BACKEND_BASE_URL}
     restart: always
 
     depends_on:
       - backend
-
-    environment:
-      - BACKEND_BASE_URL = ${BACKEND_BASE_URL}
 
     ports:
       - "5173:5173"

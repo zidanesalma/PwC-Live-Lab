@@ -3,7 +3,7 @@ import './App.css';
 import axios from "axios";
 
 function App() {
-  const base_url = process.env.BACKEND_BASE_URL || "http://backend:3005"
+  const base_url = import.meta.env.VITE_BACKEND_BASE_URL;
   console.log("API",base_url)
 
   const [students, setStudents] = useState([]);
@@ -28,7 +28,7 @@ function App() {
   };
 
   const getAllStudents = () => {
-    axios.get(`${API_BASE_URL}/students`).then((res) => {
+    axios.get(`${base_url}/students`).then((res) => {
       const safeStudents = normalizeStudents(res.data);
       setStudents(safeStudents);
       setFilteredStudents(safeStudents);
@@ -69,10 +69,10 @@ function App() {
     try {
       if (studentData.studentid) {
         // Update student
-        await axios.patch(`${API_BASE_URL}/students/${studentData.studentid}`, studentData);
+        await axios.patch(`${base_url}/students/${studentData.studentid}`, studentData);
       } else {
         // Add student
-        await axios.post(`${API_BASE_URL}/students` studentData);
+        await axios.post(`${base_url}/students`, studentData);
       }
       handleClose();
     } catch (error) {
@@ -85,7 +85,7 @@ function App() {
     const isConfirmed = window.confirm("Are you sure you want to delete this student?");
     if (isConfirmed) {
       try {
-        await axios.delete(`${API_BASE_URL}/students/${studentId}`);
+        await axios.delete(`${base_url}/students/${studentId}`);
         getAllStudents(); // Refresh list
       } catch (error) {
         console.error("Failed to delete student:", error);
