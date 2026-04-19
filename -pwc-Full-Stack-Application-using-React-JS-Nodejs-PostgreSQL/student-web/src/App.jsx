@@ -3,7 +3,7 @@ import './App.css';
 import axios from "axios";
 
 function App() {
-  const base_url = import.meta.env.VITE_BACKEND_BASE_URL;
+   const base_url = import.meta.env.VITE_BACKEND_BASE_URL || "http://localhost:3005";
   console.log("API",base_url)
 
   const [students, setStudents] = useState([]);
