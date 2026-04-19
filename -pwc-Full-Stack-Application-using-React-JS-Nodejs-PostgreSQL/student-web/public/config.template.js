@@ -1,0 +1,3 @@
+window.__ENV__ = {
+  VITE_BACKEND_BASE_URL: "__VITE_BACKEND_BASE_URL__"
+};
