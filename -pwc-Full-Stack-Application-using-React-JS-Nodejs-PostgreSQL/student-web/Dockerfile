@@ -1,21 +1,23 @@
-FROM node:20-alpine
+# ---- build stage ----
+FROM node:20-alpine AS build
 
 WORKDIR /student-web
 
-# Install dependencies first (better caching)
 COPY package*.json ./
 RUN npm install
 
-# Copy source code
 COPY . .
-
-# ---- VITE ENV VARIABLE (IMPORTANT) ----
-ARG VITE_BACKEND_BASE_URL
-ENV VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL
-
-# Build-time exposure (Vite reads env during build)
 RUN npm run build
 
-EXPOSE 5173
+# ---- runtime stage ----
+FROM nginx:alpine
 
-CMD ["npx", "vite", "--host", "0.0.0.0", "--port", "5173"]
+COPY --from=build /student-web/dist /usr/share/nginx/html
+COPY public/config.template.js /usr/share/nginx/html/config.template.js
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+RUN chmod +x /docker-entrypoint.sh
+
+EXPOSE 80
+
+CMD ["/docker-entrypoint.sh"]
