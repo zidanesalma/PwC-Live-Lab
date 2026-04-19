@@ -23,6 +23,6 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy Vite build output
 COPY --from=build /student-web/dist /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 5173
 
 CMD ["nginx", "-g", "daemon off;"]
