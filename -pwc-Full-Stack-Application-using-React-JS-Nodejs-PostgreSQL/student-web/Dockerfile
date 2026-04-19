@@ -1,4 +1,4 @@
-# ---- build stage ----
+# ---------- Build Stage ----------
 FROM node:20-alpine AS build
 
 WORKDIR /student-web
@@ -7,17 +7,22 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+ARG VITE_BACKEND_BASE_URL
+ENV VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL
+
 RUN npm run build
 
-# ---- runtime stage ----
+
+# ---------- Production Stage ----------
 FROM nginx:alpine
 
-COPY --from=build /student-web/dist /usr/share/nginx/html
-COPY public/config.template.js /usr/share/nginx/html/config.template.js
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+# Remove default nginx static config
+RUN rm -rf /usr/share/nginx/html/*
 
-RUN chmod +x /docker-entrypoint.sh
+# Copy Vite build output
+COPY --from=build /student-web/dist /usr/share/nginx/html
 
 EXPOSE 80
 
-CMD ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
