@@ -18,7 +18,10 @@ const pool = new Pool({
     database: process.env.POSTGRES_DB || 'student_master',
     host: process.env.POSTGRES_HOST || 'localhost',
     port: Number(process.env.POSTGRES_PORT || 5432),
-    max: 10
+    max: 10,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 pool.connect((err) => {
